@@ -23,6 +23,7 @@ app = FastAPI(
 origins = [
     "http://localhost",
     "http://localhost:3001",
+    "https://seon-quests.herokuapp.com"
 ]
 
 app.add_middleware(
