@@ -28,6 +28,10 @@ def check_answer(db: Session, quest_stage_id: int, answer: str) -> bool:
     original_answer = db.query(QuestStages).filter(
         QuestStages.id == quest_stage_id
     ).first().answer
-    if answer == original_answer:
+    original_answer_fmt = ''.join(
+        e for e in original_answer if e.isalnum()
+    ).lower()
+    answer_fmt = ''.join(e for e in answer if e.isalnum()).lower()
+    if answer_fmt == original_answer_fmt:
         return True
     return False

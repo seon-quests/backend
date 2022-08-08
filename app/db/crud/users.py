@@ -3,6 +3,7 @@ import typing as t
 from fastapi import HTTPException
 from starlette import status
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 
 from app.db.models.users import User
 from .. import schemas
@@ -17,7 +18,9 @@ def get_user(db: Session, user_id: int):
 
 
 def get_user_by_email(db: Session, email: str) -> schemas.UserBase:
-    return db.query(User).filter(User.email == email).first()
+    return db.query(User).filter(
+        func.lower(User.email) == email.lower()
+    ).first()
 
 
 def get_users(
