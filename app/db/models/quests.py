@@ -23,7 +23,7 @@ class Quest(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, nullable=False)
     description = Column(Text)
-    start_datetime = Column(DateTime)
+    start_datetime = Column(DateTime(timezone=True))
     status = Column(ENUM(QuestStatuses))
 
     stages = relationship("QuestStages", back_populates="quest")

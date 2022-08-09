@@ -15,7 +15,7 @@ class QuestsProgress(Base):
     quest_id = Column(ForeignKey('quest.id'), nullable=False)
     answer = Column(String, nullable=True)
     time_to_answer = Column(Interval, nullable=False)
-    answered_at = Column(DateTime, nullable=False)
+    answered_at = Column(DateTime(timezone=True), nullable=False)
     current_stage_index = Column(SmallInteger, nullable=False)
 
     quest = relationship("Quest", back_populates="teams_progresses")

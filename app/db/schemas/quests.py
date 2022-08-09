@@ -3,7 +3,7 @@ import typing as t
 
 from pydantic import BaseModel
 from ..models.quests import QuestStatuses
-from .teams import TeamResults, TeamWithCaptainOut
+from .teams import TeamResults
 from .quest_registered_teams import QuestRegisteredTeamsOutSchema
 
 

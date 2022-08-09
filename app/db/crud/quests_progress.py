@@ -38,7 +38,7 @@ def calculate_time_to_answer_stage(
     else:
         quest = get_quest(db=db, quest_id=quest_id)
         start_time = quest.start_datetime
-    return datetime.datetime.now() - start_time
+    return datetime.datetime.now(datetime.timezone.utc) - start_time
 
 
 def create_quest_progress(

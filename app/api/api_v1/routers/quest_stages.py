@@ -120,7 +120,7 @@ async def check_quest_stage_answer(
         quest_progress = QuestProgressCreateSchema(
             quest_id=quest_id, team_id=team_id, answer=answer,
             time_to_answer=time_to_answer, current_stage_index=new_index,
-            answered_at=datetime.now()
+            answered_at=datetime.utcnow()
         )
         create_quest_progress(db=db, quest_progress=quest_progress)
         current_stage_details = await get_current_stage_details(
