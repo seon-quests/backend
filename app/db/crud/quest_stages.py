@@ -1,6 +1,8 @@
 import typing as t
 
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
+from starlette import status
 
 from ..schemas import QuestStagesCreateSchema
 from ..models.quest_stages import QuestStages
@@ -14,6 +16,19 @@ def create_quest_stage(
     db.commit()
     db.refresh(db_quest_stage)
     return db_quest_stage
+
+
+def delete_quest_stage(db: Session, quest_stage_id: int):
+    quest_stage = db.query(QuestStages).filter(
+        QuestStages.id == quest_stage_id
+    ).first()
+    if not quest_stage:
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND, detail="No such quest stage"
+        )
+    db.delete(quest_stage)
+    db.commit()
+    return quest_stage
 
 
 def get_quest_stages_list(

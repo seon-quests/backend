@@ -4,7 +4,8 @@ from app.db.crud.quests import (
     get_quests_available_for_players, get_quest_with_results
 )
 from app.db.crud.quest_stages import (
-    create_quest_stage, get_quest_stages_list, check_answer
+    create_quest_stage, delete_quest_stage,
+    get_quest_stages_list, check_answer
 )
 from app.db.crud.teams import create_team, get_team_by_name, get_team_for_player
 from app.db.crud.quest_registered_teams import (

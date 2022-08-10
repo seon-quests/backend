@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 
 from app.db.session import get_db
 from app.db.crud import (
-    get_quest, create_quest_stage, get_quest_stages_list,
+    get_quest, create_quest_stage, delete_quest_stage, get_quest_stages_list,
     get_team_for_player, get_last_quest_progress_for_team, check_answer,
     create_quest_progress, calculate_time_to_answer_stage
 )
@@ -34,6 +34,21 @@ async def quest_stage_create(
     """
     get_quest(db, quest_id)
     return create_quest_stage(db, quest_stage, quest_id)
+
+
+@r.delete("/quest-stages/{quest_stage_id}", response_model=QuestStagesOutSchema)
+async def quest_stage_delete(
+    request: Request,
+    quest_stage_id: int,
+    quest_id: int,
+    db=Depends(get_db),
+    current_user=Depends(get_current_active_superuser)
+):
+    """
+    Delete some quest stage
+    """
+    get_quest(db, quest_id)
+    return delete_quest_stage(db, quest_stage_id)
 
 
 @r.get(
@@ -120,7 +135,7 @@ async def check_quest_stage_answer(
         quest_progress = QuestProgressCreateSchema(
             quest_id=quest_id, team_id=team_id, answer=answer,
             time_to_answer=time_to_answer, current_stage_index=new_index,
-            answered_at=datetime.utcnow()
+            answered_at=datetime.now()
         )
         create_quest_progress(db=db, quest_progress=quest_progress)
         current_stage_details = await get_current_stage_details(
