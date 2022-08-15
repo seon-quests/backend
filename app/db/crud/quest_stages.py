@@ -6,6 +6,7 @@ from starlette import status
 
 from ..schemas import QuestStagesCreateSchema
 from ..models.quest_stages import QuestStages
+from ..models.quests import Quest
 
 
 def create_quest_stage(
@@ -19,6 +20,13 @@ def create_quest_stage(
 
 
 def delete_quest_stage(db: Session, quest_stage_id: int):
+    quest_stage = get_quest_stage(db=db, quest_stage_id=quest_stage_id)
+    db.delete(quest_stage)
+    db.commit()
+    return quest_stage
+
+
+def get_quest_stage(db: Session, quest_stage_id: int):
     quest_stage = db.query(QuestStages).filter(
         QuestStages.id == quest_stage_id
     ).first()
@@ -26,9 +34,18 @@ def delete_quest_stage(db: Session, quest_stage_id: int):
         raise HTTPException(
             status.HTTP_404_NOT_FOUND, detail="No such quest stage"
         )
-    db.delete(quest_stage)
-    db.commit()
     return quest_stage
+
+
+def get_quest_stage_progress_index(
+        db: Session,
+        quest_stage_id: int, quest: Quest
+):
+    quest_stage: QuestStages = get_quest_stage(
+        db=db, quest_stage_id=quest_stage_id
+    )
+    all_stages = get_quest_stages_list(db=db, quest_id=quest.id)
+    return all_stages.index(quest_stage)
 
 
 def get_quest_stages_list(

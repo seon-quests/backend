@@ -51,3 +51,28 @@ def create_quest_progress(
     db.commit()
     db.refresh(db_quest_progress)
     return db_quest_progress
+
+
+def check_quest_stage_was_not_reached(
+        db: Session,
+        quest_id: int,
+        quest_stage_progress_index: int
+):
+    """
+    return True if the quest stage hasn't been played or passed yet
+    return False if at least one team has reached this stage
+    """
+    quest_stage_progress_indexes_query = db.query(QuestsProgress).filter(
+        QuestsProgress.quest_id == quest_id
+    ).order_by(QuestsProgress.current_stage_index.asc()).values(
+        'current_stage_index'
+    )
+    quest_stage_progress_indexes = [
+        index[0] for index in quest_stage_progress_indexes_query
+    ]
+    if (
+            quest_stage_progress_index not in quest_stage_progress_indexes and
+            quest_stage_progress_index-1 not in quest_stage_progress_indexes
+    ):
+        return True
+    return False

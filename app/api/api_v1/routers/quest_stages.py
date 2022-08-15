@@ -8,7 +8,8 @@ from app.db.session import get_db
 from app.db.crud import (
     get_quest, create_quest_stage, delete_quest_stage, get_quest_stages_list,
     get_team_for_player, get_last_quest_progress_for_team, check_answer,
-    create_quest_progress, calculate_time_to_answer_stage
+    create_quest_progress, calculate_time_to_answer_stage,
+    get_quest_stage_progress_index, check_quest_stage_was_not_reached
 )
 from app.db.schemas import (
     QuestStagesCreateSchema, QuestStagesOutSchema,
@@ -36,7 +37,10 @@ async def quest_stage_create(
     return create_quest_stage(db, quest_stage, quest_id)
 
 
-@r.delete("/quest-stages/{quest_stage_id}", response_model=QuestStagesOutSchema)
+@r.delete(
+    "/quest-stages/{quest_stage_id}",
+    response_model=QuestStagesOutSchema
+)
 async def quest_stage_delete(
     request: Request,
     quest_stage_id: int,
@@ -47,8 +51,18 @@ async def quest_stage_delete(
     """
     Delete some quest stage
     """
-    get_quest(db, quest_id)
-    return delete_quest_stage(db, quest_stage_id)
+    quest = get_quest(db, quest_id)
+    quest_stage_progress_index = get_quest_stage_progress_index(
+        db, quest_stage_id, quest
+    )
+    if check_quest_stage_was_not_reached(
+        db, quest_id, quest_stage_progress_index
+    ):
+        return delete_quest_stage(db, quest_stage_id)
+    return JSONResponse(
+        status_code=403,
+        content={"detail": "Цей етап вже хтось пройшов або проходить"}
+    )
 
 
 @r.get(

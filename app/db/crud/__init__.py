@@ -5,7 +5,8 @@ from app.db.crud.quests import (
 )
 from app.db.crud.quest_stages import (
     create_quest_stage, delete_quest_stage,
-    get_quest_stages_list, check_answer
+    get_quest_stages_list, check_answer,
+    get_quest_stage_progress_index
 )
 from app.db.crud.teams import create_team, get_team_by_name, get_team_for_player
 from app.db.crud.quest_registered_teams import (
@@ -13,5 +14,6 @@ from app.db.crud.quest_registered_teams import (
 )
 from app.db.crud.quests_progress import (
     get_progresses_for_team, get_last_quest_progress_for_team,
-    create_quest_progress, calculate_time_to_answer_stage
+    create_quest_progress, calculate_time_to_answer_stage,
+    check_quest_stage_was_not_reached
 )
