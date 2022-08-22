@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
 
-from ..schemas import QuestStagesCreateSchema
+from ..schemas import QuestStagesCreateSchema, QuestStagesEditSchema
 from ..models.quest_stages import QuestStages
 from ..models.quests import Quest
 
@@ -26,7 +26,7 @@ def delete_quest_stage(db: Session, quest_stage_id: int):
     return quest_stage
 
 
-def get_quest_stage(db: Session, quest_stage_id: int):
+def get_quest_stage(db: Session, quest_stage_id: int) -> QuestStages:
     quest_stage = db.query(QuestStages).filter(
         QuestStages.id == quest_stage_id
     ).first()
@@ -35,6 +35,19 @@ def get_quest_stage(db: Session, quest_stage_id: int):
             status.HTTP_404_NOT_FOUND, detail="No such quest stage"
         )
     return quest_stage
+
+
+def edit_quest_stage(
+    db: Session, quest_stage_id: int, quest_stage: QuestStagesEditSchema
+) -> QuestStages:
+    db_quest_stage = get_quest_stage(db, quest_stage_id)
+    update_data = quest_stage.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_quest_stage, key, value)
+    db.add(db_quest_stage)
+    db.commit()
+    db.refresh(db_quest_stage)
+    return db_quest_stage
 
 
 def get_quest_stage_progress_index(

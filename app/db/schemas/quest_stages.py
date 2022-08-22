@@ -1,3 +1,4 @@
+import typing as t
 from datetime import datetime
 
 from pydantic import BaseModel
@@ -33,7 +34,9 @@ class QuestStagesCreateSchema(QuestStagesBaseSchema):
 
 
 class QuestStagesEditSchema(QuestStagesBaseSchema):
-    answer: str
+    order_number: t.Optional[int]
+    description: t.Optional[str]
+    answer: t.Optional[str]
 
     class Config:
         orm_mode = True

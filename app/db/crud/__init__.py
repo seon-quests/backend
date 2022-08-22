@@ -4,7 +4,7 @@ from app.db.crud.quests import (
     get_quests_available_for_players, get_quest_with_results
 )
 from app.db.crud.quest_stages import (
-    create_quest_stage, delete_quest_stage,
+    create_quest_stage, get_quest_stage, edit_quest_stage, delete_quest_stage,
     get_quest_stages_list, check_answer,
     get_quest_stage_progress_index
 )

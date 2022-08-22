@@ -18,8 +18,10 @@ def create_quest(db: Session, quest: QuestCreate):
     return db_quest
 
 
-def get_quest_by_name(db: Session, name: str):
-    return db.query(Quest).filter(Quest.name == name).first()
+def get_quest_by_name(db: Session, name: str, exclude_quest_id: int = None):
+    return db.query(Quest).filter(
+        Quest.name == name, Quest.id != exclude_quest_id
+    ).first()
 
 
 def get_quest(db: Session, quest_id: int):
@@ -64,7 +66,7 @@ def edit_quest(
     db_quest = get_quest(db, quest_id)
     update_data = quest.dict(exclude_unset=True)
     if "name" in update_data:
-        existing_quest = get_quest_by_name(db, quest.name)
+        existing_quest = get_quest_by_name(db, quest.name, quest_id)
         if existing_quest:
             raise HTTPException(status_code=400, detail="Квест вже існує")
     for key, value in update_data.items():

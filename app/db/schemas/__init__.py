@@ -6,7 +6,8 @@ from app.db.schemas.quests import (
 )
 from app.db.schemas.quest_stages import (
     QuestStagesBaseSchema, QuestStagesOutSchema,
-    QuestStagesCreateSchema, QuestCurrentStageSchema
+    QuestStagesCreateSchema, QuestCurrentStageSchema,
+    QuestStagesEditSchema
 )
 from app.db.schemas.teams import (
     TeamCreate, TeamOut, TeamWithCaptainOut, TeamResults

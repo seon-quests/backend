@@ -6,16 +6,20 @@ from fastapi.responses import JSONResponse
 
 from app.db.session import get_db
 from app.db.crud import (
-    get_quest, create_quest_stage, delete_quest_stage, get_quest_stages_list,
-    get_team_for_player, get_last_quest_progress_for_team, check_answer,
+    get_quest, get_quest_stage, create_quest_stage, delete_quest_stage,
+    get_quest_stages_list, get_team_for_player,
+    get_last_quest_progress_for_team, check_answer,
     create_quest_progress, calculate_time_to_answer_stage,
-    get_quest_stage_progress_index, check_quest_stage_was_not_reached
+    get_quest_stage_progress_index, check_quest_stage_was_not_reached,
+    edit_quest_stage
 )
 from app.db.schemas import (
     QuestStagesCreateSchema, QuestStagesOutSchema,
-    QuestCurrentStageSchema, QuestProgressCreateSchema
+    QuestCurrentStageSchema, QuestProgressCreateSchema,
+    QuestStagesEditSchema
 )
 from app.core.auth import get_current_active_superuser, get_current_active_user
+from app.db.models.quests import QuestStatuses
 
 quest_stages_router = r = APIRouter(
     prefix="/quests/{quest_id}"
@@ -35,6 +39,37 @@ async def quest_stage_create(
     """
     get_quest(db, quest_id)
     return create_quest_stage(db, quest_stage, quest_id)
+
+
+@r.get("/quest-stages/{quest_stage_id}", response_model=QuestStagesOutSchema)
+async def quest_stage_fetch(
+    request: Request,
+    quest_stage_id: int,
+    quest_id: int,
+    db=Depends(get_db),
+    current_user=Depends(get_current_active_superuser)
+):
+    """
+    Create a new quest stage
+    """
+    get_quest(db, quest_id)
+    quest_stage = get_quest_stage(db=db, quest_stage_id=quest_stage_id)
+    return quest_stage
+
+
+@r.patch("/quest-stages/{quest_stage_id}", response_model=QuestStagesOutSchema)
+async def quest_edit(
+    request: Request,
+    quest_id: int,
+    quest_stage_id: int,
+    quest_stage: QuestStagesEditSchema,
+    db=Depends(get_db),
+    current_user=Depends(get_current_active_superuser),
+):
+    """
+    Update existing quest stage
+    """
+    return edit_quest_stage(db, quest_stage_id, quest_stage)
 
 
 @r.delete(
@@ -131,7 +166,11 @@ async def check_quest_stage_answer(
     db=Depends(get_db),
     current_user=Depends(get_current_active_user),
 ):
-    # working on this one
+    quest = get_quest(db, quest_id)
+    if quest.status != QuestStatuses.started:
+        return JSONResponse(status_code=200, content={
+            "detail": "not active"
+        })
     if check_answer(db=db, quest_stage_id=quest_stage_id, answer=answer):
         team_id = get_team_for_player(db=db, user_id=current_user.id).id
         quest_team_last_progress = get_last_quest_progress_for_team(
