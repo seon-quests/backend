@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import Column, Integer, String, Text, DateTime
+from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import relationship
 
@@ -25,6 +25,7 @@ class Quest(Base):
     description = Column(Text)
     start_datetime = Column(DateTime(timezone=True))
     status = Column(ENUM(QuestStatuses))
+    has_plug_stage = Column(Boolean)
 
     stages = relationship("QuestStages", back_populates="quest")
     teams = relationship(

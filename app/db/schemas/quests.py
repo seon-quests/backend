@@ -11,6 +11,7 @@ class QuestBase(BaseModel):
     name: str
     description: str = None
     start_datetime: datetime
+    has_plug_stage: bool
 
 
 class QuestOut(QuestBase):
@@ -31,6 +32,7 @@ class QuestEdit(QuestBase):
     name: t.Optional[str]
     status: t.Optional[QuestStatuses]
     start_datetime: t.Optional[datetime]
+    has_plug_stage: t.Optional[bool]
 
     class Config:
         orm_mode = True

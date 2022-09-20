@@ -32,15 +32,14 @@ def get_quest(db: Session, quest_id: int):
 
 
 def get_quest_with_results(db: Session, quest_id: int):
+    # later add to sorting QuestsProgress.current_stage_index
     teams_with_progresses = db.query(Team).outerjoin(
         QuestsProgress,
         and_(
             QuestsProgress.team_id == Team.id,
             QuestsProgress.quest_id == quest_id
         )
-    ).order_by(
-        QuestsProgress.current_stage_index
-    ).options(contains_eager('progresses')).all()
+    ).order_by(Team.id.asc()).options(contains_eager('progresses')).all()
     quest = db.query(Quest).filter(Quest.id == quest_id).first()
     quest.teams_with_progresses = teams_with_progresses
     return quest
