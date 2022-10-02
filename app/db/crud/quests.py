@@ -39,7 +39,7 @@ def get_quest_with_results(db: Session, quest_id: int):
             QuestsProgress.team_id == Team.id,
             QuestsProgress.quest_id == quest_id
         )
-    ).order_by(Team.id.asc()).options(contains_eager('progresses')).all()
+    ).order_by(Team.id.asc(), QuestsProgress.id.asc()).options(contains_eager('progresses')).all()
     quest = db.query(Quest).filter(Quest.id == quest_id).first()
     quest.teams_with_progresses = teams_with_progresses
     return quest
