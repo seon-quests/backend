@@ -7,7 +7,11 @@ def test_get_users(client, test_superuser, superuser_token_headers):
     assert response.json() == [
         {
             "id": test_superuser.id,
+            "first_name": test_superuser.first_name,
             "email": test_superuser.email,
+            "phone_number": test_superuser.phone_number,
+            "last_name": test_superuser.last_name,
+            "type": "admin",
             "is_active": test_superuser.is_active,
             "is_superuser": test_superuser.is_superuser,
         }
@@ -37,6 +41,8 @@ def test_edit_user(client, test_superuser, superuser_token_headers):
         "first_name": "Joe",
         "last_name": "Smith",
         "password": "new_password",
+        "phone_number": "12938",
+        "type": "admin"
     }
 
     response = client.put(
@@ -77,6 +83,10 @@ def test_get_user(
         "email": test_user.email,
         "is_active": bool(test_user.is_active),
         "is_superuser": test_user.is_superuser,
+        'first_name': test_user.first_name,
+        'last_name': test_user.last_name,
+        'phone_number': test_user.phone_number,
+        "type": "player"
     }
 
 

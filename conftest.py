@@ -5,7 +5,7 @@ from sqlalchemy_utils import database_exists, create_database, drop_database
 from fastapi.testclient import TestClient
 import typing as t
 
-from app.db.models.users import User
+from app.db.models.users import User, UserTypes
 from app.core import config, security
 from app.db.session import Base, get_db
 from app.main import app
@@ -107,6 +107,10 @@ def test_user(test_db) -> User:
 
     user = User(
         email="fake@email.com",
+        first_name='Test',
+        last_name='Me',
+        phone_number='012897319283',
+        type=UserTypes.player,
         hashed_password=get_password_hash(),
         is_active=True,
     )
@@ -123,8 +127,12 @@ def test_superuser(test_db) -> User:
 
     user = User(
         email="fakeadmin@email.com",
+        first_name='Test',
+        last_name='Me',
+        phone_number='012897319283',
+        type=UserTypes.admin,
         hashed_password=get_password_hash(),
-        is_superuser=True,
+        is_superuser=True
     )
     test_db.add(user)
     test_db.commit()
