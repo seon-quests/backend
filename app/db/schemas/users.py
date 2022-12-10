@@ -11,7 +11,7 @@ class UserBase(BaseModel):
     first_name: str = None
     last_name: str = None
     instagram: str = None
-    phone_number: str = None
+    phone_number: str
     type: UserTypes = UserTypes.player
 
 
@@ -24,6 +24,7 @@ class UserOut(UserBase):
 
 class UserShortInfoOut(BaseModel):
     email: str
+    phone_number: str = None
     first_name: str
     last_name: str
 
